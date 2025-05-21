@@ -46,7 +46,7 @@ runs:
         num_gens: ${{ inputs.fuzz_num_gens }}
 
     - name: Run APWorld tests
-      if: ${{ inputs.enable_tests == 'true' }}
+      if: ${{ inputs.enable_test == 'true' }}
       uses: dariocurr/pytest-summary@v2.4
       with:
         extensions: pytest-subtests pytest-xdist
