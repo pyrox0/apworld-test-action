@@ -1,0 +1,56 @@
+name: 'APWorld Testing and Fuzzing'
+description: 'Test and Fuzz custom APWorlds with Github Actions'
+inputs:
+  world:
+    description: 'Which world to fuzz/test'
+    required: true
+  enable_fuzz:
+    description: 'Set true to fuzz the specified APWorld'
+    required: false
+    default: 'false'
+  enable_test:
+    description: 'Set true to run the specified APWorld\'s unittests'
+    required: false
+    default: 'false'
+  skip_python_setup:
+    description: 'Set false if you run @actions/setup-python yourself before this action."
+    required: false
+    default: "false"
+  fuzz_num_gens:
+    description: 'The number of fuzzer runs to do. Defaults to 100, you shouldn\'t need to change this."
+    required: false
+    default: "100"
+    
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Python
+      if: ${{ inputs.skip_python_setup == 'true' }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: 'pip'
+
+    - name: Install Python Deps
+      run: |
+        find . -name "requirements.txt" -exec pip install -r '{}' \;
+        pip install setuptools
+      shell: bash
+
+    - name: Fuzz APWorld
+      if: ${{ inputs.enable_fuzz == 'true' }}
+      uses: pyrox0/apworld-fuzzer-action@v1
+      with:
+        world: ${{ inputs.world }}
+        num_gens: ${{ inputs.fuzz_num_gens }}
+
+    - name: Run APWorld tests
+      if: ${{ inputs.enable_tests == 'true' }}
+      uses: dariocurr/pytest-summary@v2.4
+      with:
+        extensions: pytest-subtests pytest-xdist
+        options: -n auto
+        paths: worlds/${{ inputs.world }}/test/**.py
+        show: "all"
+        
+
