@@ -9,7 +9,7 @@ inputs:
     required: false
     default: 'false'
   enable_test:
-    description: 'Set true to run the specified APWorld\'s unittests'
+    description: 'Set true to run the specified APWorld unittests'
     required: false
     default: 'false'
   skip_python_setup:
@@ -17,7 +17,7 @@ inputs:
     required: false
     default: "false"
   fuzz_num_gens:
-    description: 'The number of fuzzer runs to do. Defaults to 100, you shouldn\'t need to change this."
+    description: 'The number of fuzzer runs to do. Defaults to 100, you should not need to change this."
     required: false
     default: "100"
     
